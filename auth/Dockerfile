@@ -6,6 +6,6 @@ COPY package.json .
 
 COPY . .
 
-RUN npm install && npm cache clean --force
+RUN npm install --only=prod && npm cache clean --force
 
 CMD ["npm", "start"]
