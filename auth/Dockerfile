@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY package.json .
 
-COPY . .
-
 RUN npm install --only=prod && npm cache clean --force
+
+COPY . .
 
 CMD ["npm", "start"]
