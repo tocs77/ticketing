@@ -26,13 +26,14 @@
     "ts-jest": "^29.0.3"
   },
   "dependencies": {
-    "@types/express": "^4.17.15",
+    "@tocstick/common": "^1.0.3",
     "@types/cookie-session": "^2.0.44",
+    "@types/express": "^4.17.15",
     "@types/jsonwebtoken": "^8.5.9",
     "cookie-session": "^2.0.0",
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4"
