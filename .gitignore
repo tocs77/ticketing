@@ -132,3 +132,5 @@ dist
 .pnp.*
 
 
+common/build
+.DS_Store
