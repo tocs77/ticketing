@@ -17,6 +17,14 @@ build:
         manual:
           - dest: .
             src: './src'
+    - image: tocs77/ticketing-tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src'
     - image: tocs77/ticketing-client
       context: client
       docker:
