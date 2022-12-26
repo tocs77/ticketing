@@ -1,12 +1,21 @@
-import request from 'supertest';
-
-import { app } from '../app';
+import jwt from 'jsonwebtoken';
 
 export const email = 'test@test.com';
+import mongoose from 'mongoose';
 
-export const signin = async () => {
+export const signin = (): string[] => {
   const password = 'password';
-  const response = await request(app).post('/api/users/signup').send({ email, password }).expect(201);
-  const cookie = response.get('Set-Cookie');
-  return cookie;
+  //Build a JWT payload
+  const id = new mongoose.Types.ObjectId().toHexString();
+  const payload = { id, email, password };
+  //Create jwt
+  const token = jwt.sign(payload, process.env.JWT_KEY!);
+
+  //Build session object {jwt: ....}
+  const session = { jwt: token };
+  const sessionJSON = JSON.stringify(session);
+
+  const base64 = Buffer.from(sessionJSON).toString('base64');
+
+  return [`session=${base64}`];
 };
