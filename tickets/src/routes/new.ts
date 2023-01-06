@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import { body } from 'express-validator';
 import { requireAuth, validateRequest, BadRequestError } from '@tocstick/common';
 import { Ticket } from '../models/ticket';
+import { TicketCreatedPublisher } from '../events/publishers/ticket-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -18,6 +20,12 @@ router.post(
 
     try {
       const ticket = await Ticket.create({ title, price, userId: req.currentUser?.id });
+      new TicketCreatedPublisher(natsWrapper.client).publish({
+        id: ticket.id,
+        title: ticket.title,
+        price: ticket.price,
+        userId: ticket.userId,
+      });
       res.status(201).send(ticket);
     } catch (error) {
       return next(new BadRequestError('Error creating ticket'));
