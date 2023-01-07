@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { signin } from '../../test/authHelper';
 import mongoose from 'mongoose';
+import { natsWrapper } from '../../nats-wrapper';
 
 describe('Update ticket route tests', () => {
   it('returns 401 if user not authenticated', async () => {
@@ -50,5 +51,16 @@ describe('Update ticket route tests', () => {
     const ticketResponse = await request(app).get(`/api/tickets/${response.body.id}`).send().expect(200);
     expect(ticketResponse.body.title).toEqual('ww');
     expect(ticketResponse.body.price).toEqual(15);
+  });
+
+  it('emits event on updated ticket', async () => {
+    const cookie = signin();
+    const price = 10;
+    const title = 'test';
+    const response = await request(app).post('/api/tickets').set('Cookie', cookie).send({ title, price }).expect(201);
+    await request(app).put(`/api/tickets/${response.body.id}`).set('Cookie', cookie).send({ title: 'ww', price: 15 }).expect(200);
+
+    await request(app).get(`/api/tickets/${response.body.id}`).send().expect(200);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

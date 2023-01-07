@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 
 let cleanfunc: any;
 
+jest.mock('../nats-wrapper.ts');
+
 beforeAll(async () => {
   process.env.JWT_KEY = 'dddd';
   const mongo = await MongoMemoryServer.create();
@@ -13,6 +15,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
   for (let collection of collections) {
     await collection.deleteMany({});
