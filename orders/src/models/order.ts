@@ -1,12 +1,13 @@
 import mongoose, { Model, HydratedDocument } from 'mongoose';
 
 import { OrderStatus } from '@tocstick/common';
+import { ITicket } from './ticket';
 
 interface Order {
   status: OrderStatus;
   userId: string;
   expiresAt: Date;
-  //ticket: Ticket;
+  ticket: ITicket;
 }
 
 interface OrderModel extends Model<Order> {
