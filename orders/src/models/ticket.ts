@@ -3,6 +3,7 @@ import { OrderStatus } from '@tocstick/common';
 import { Order } from './order';
 
 export interface ITicket {
+  id?: string;
   title: string;
   price: number;
   isReserved?(): Promise<boolean>;

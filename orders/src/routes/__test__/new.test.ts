@@ -45,5 +45,9 @@ describe('New order tests', () => {
     await request(app).post('/api/orders').set('Cookie', signin()).send({ ticketId: ticket.id }).expect(201);
   });
 
-  it.todo('Emits order created event');
+  it('Emits order created event', async () => {
+    const ticket = await Ticket.build({ title: 'Concert', price: 15 });
+    await request(app).post('/api/orders').set('Cookie', signin()).send({ ticketId: ticket.id }).expect(201);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });

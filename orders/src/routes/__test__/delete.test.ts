@@ -4,6 +4,7 @@ import { signin } from '../../test/authHelper';
 import { Ticket } from '../../models/ticket';
 import { Order } from '../../models/order';
 import { OrderStatus } from '@tocstick/common';
+import { natsWrapper } from '../../nats-wrapper';
 
 interface FetchedOrder extends Order {
   id: string;
@@ -38,5 +39,18 @@ describe('Cancel order tests', () => {
     expect(deletedOrder.status).toEqual(OrderStatus.Cancelled);
   });
 
-  it.todo('Emits order cancelled event');
+  it('Emits order cancelled event', async () => {
+    const ticket = await buildTicket();
+
+    const user = signin();
+
+    const { body: order }: { body: FetchedOrder } = await request(app)
+      .post('/api/orders')
+      .set('Cookie', user)
+      .send({ ticketId: ticket.id })
+      .expect(201);
+    jest.clearAllMocks();
+    await request(app).delete(`/api/orders/${order.id}`).set('Cookie', user).expect(204);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
 });
