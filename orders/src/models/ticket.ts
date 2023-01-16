@@ -1,9 +1,11 @@
-import mongoose, { Model, HydratedDocument } from 'mongoose';
-import { OrderStatus } from '@tocstick/common';
+import mongoose, { Model, HydratedDocument, version } from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { OrderStatus, TicketCreatedEvent } from '@tocstick/common';
 import { Order } from './order';
 
 export interface ITicket {
   id?: string;
+  version?: number;
   title: string;
   price: number;
   isReserved?(): Promise<boolean>;
@@ -11,6 +13,7 @@ export interface ITicket {
 
 interface TicketModel extends Model<ITicket> {
   build(attrs: ITicket): Promise<HydratedDocument<ITicket>>;
+  findByEvent(event: { id: string; version: number }): Promise<HydratedDocument<ITicket | null>>;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -36,8 +39,15 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
+
 ticketSchema.static('build', async function build(attrs: ITicket) {
-  return await this.create(attrs);
+  return await this.create({ title: attrs.title, price: attrs.price, _id: attrs.id });
+});
+
+ticketSchema.static('findByEvent', async function findByEvent(event: { id: string; version: number }) {
+  return await Ticket.findOne({ _id: event.id, version: event.version - 1 });
 });
 
 ticketSchema.methods.isReserved = async function () {

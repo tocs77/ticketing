@@ -8,6 +8,7 @@ interface Order {
   userId: string;
   expiresAt: Date;
   ticket: ITicket;
+  version?: number;
 }
 
 interface OrderModel extends Model<Order> {

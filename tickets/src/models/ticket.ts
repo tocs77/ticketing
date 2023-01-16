@@ -1,9 +1,11 @@
 import mongoose, { Model, HydratedDocument } from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 interface Ticket {
   title: string;
   price: number;
   userId: string;
+  version?: number;
 }
 
 interface TicketModel extends Model<Ticket> {
@@ -35,6 +37,8 @@ const ticketSchema = new mongoose.Schema(
     },
   }
 );
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.static('build', async function build(attrs: Ticket) {
   return await this.create(attrs);
