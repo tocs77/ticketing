@@ -1,6 +1,6 @@
-import mongoose, { Model, HydratedDocument, version } from 'mongoose';
+import mongoose, { Model, HydratedDocument } from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
-import { OrderStatus, TicketCreatedEvent } from '@tocstick/common';
+import { OrderStatus } from '@tocstick/common';
 import { Order } from './order';
 
 export interface ITicket {

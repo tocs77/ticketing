@@ -1,5 +1,5 @@
 import mongoose, { Model, HydratedDocument } from 'mongoose';
-
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@tocstick/common';
 import { ITicket } from './ticket';
 
@@ -45,6 +45,9 @@ const orderSchema = new mongoose.Schema(
     },
   }
 );
+
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.static('build', async function build(attrs: Order) {
   return await this.create(attrs);
