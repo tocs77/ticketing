@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest, NotAuthorizedError, NotFoundError } from '@tocstick/common';
+import { requireAuth, validateRequest, NotAuthorizedError, NotFoundError, BadRequestError } from '@tocstick/common';
 import { Ticket } from '../models/ticket';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
 import { natsWrapper } from '../nats-wrapper';
@@ -21,6 +21,8 @@ router.put(
     const ticket = await Ticket.findById(req.params.id);
     if (!ticket) return next(new NotFoundError());
     if (ticket.userId !== req.currentUser?.id) return next(new NotAuthorizedError());
+    if (ticket.orderId) return next(new BadRequestError('Cannot edit reserved ticket'));
+
     ticket.price = price;
     ticket.title = title;
     await ticket.save();

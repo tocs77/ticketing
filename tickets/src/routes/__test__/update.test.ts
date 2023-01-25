@@ -3,6 +3,7 @@ import { app } from '../../app';
 import { signin } from '../../test/authHelper';
 import mongoose from 'mongoose';
 import { natsWrapper } from '../../nats-wrapper';
+import { Ticket } from '../../models/ticket';
 
 describe('Update ticket route tests', () => {
   it('returns 401 if user not authenticated', async () => {
@@ -62,5 +63,17 @@ describe('Update ticket route tests', () => {
 
     await request(app).get(`/api/tickets/${response.body.id}`).send().expect(200);
     expect(natsWrapper.client.publish).toHaveBeenCalled();
+  });
+
+  it('rejects update if ticked is reserved', async () => {
+    const cookie = signin();
+    const price = 10;
+    const title = 'test';
+    const response = await request(app).post('/api/tickets').set('Cookie', cookie).send({ title, price }).expect(201);
+
+    const ticked = await Ticket.findById(response.body.id);
+    ticked!.orderId = '333344kddk';
+    await ticked?.save();
+    await request(app).put(`/api/tickets/${response.body.id}`).set('Cookie', cookie).send({ title: 'ww', price: 15 }).expect(400);
   });
 });
