@@ -1,0 +1,1 @@
+docker build -t tocs77/ticketing-expiration . && docker push tocs77/ticketing-expiration

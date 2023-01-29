@@ -33,6 +33,14 @@ build:
         manual:
           - dest: .
             src: './src'
+    - image: tocs77/ticketing-expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src'
     - image: tocs77/ticketing-client
       context: client
       docker:
