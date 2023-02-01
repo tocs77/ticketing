@@ -23,7 +23,7 @@
     "ts-jest": "^29.0.3"
   },
   "dependencies": {
-    "@tocstick/common": "^1.0.14",
+    "@tocstick/common": "^1.0.15",
     "bull": "^4.10.2",
     "node-nats-streaming": "^0.3.2",
     "ts-node-dev": "^2.0.0",
