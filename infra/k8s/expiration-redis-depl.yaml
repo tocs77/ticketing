@@ -17,8 +17,11 @@ spec:
           image: redis
           resources:
             limits:
-              memory: '128Mi'
-              cpu: '500m'
+              memory: 512Mi
+              cpu: '1'
+            requests:
+              memory: 128Mi
+              cpu: '0.1'
 
 ---
 apiVersion: v1
