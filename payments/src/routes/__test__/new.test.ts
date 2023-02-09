@@ -3,8 +3,10 @@ import request from 'supertest';
 import { app } from '../../app';
 import { signin } from '../../test/authHelper';
 import { Order } from '../../models/order';
-
+import { stripe } from '../../stripe';
 import { OrderStatus } from '@tocstick/common';
+
+//jest.mock('../../stripe.ts');
 
 describe('New payment order tests', () => {
   it('has a route listening /api/payments post request', async () => {
@@ -55,14 +57,24 @@ describe('New payment order tests', () => {
 
   it('return 201 for successfully created order', async () => {
     const userId = new mongoose.Types.ObjectId().toHexString();
+    const price = Math.floor(Math.random() * 10000);
     const order = await Order.build({
       id: new mongoose.Types.ObjectId().toHexString(),
       userId: userId,
       status: OrderStatus.Created,
-      price: 12,
+      price,
       version: 0,
     });
-    const token = 'ssddfff';
+    const token = 'tok_visa';
     await request(app).post('/api/payments').set('Cookie', signin(userId)).send({ orderId: order.id, token }).expect(201);
+
+    const stripeCharges = await stripe.charges.list({ limit: 40 });
+    const charge = stripeCharges.data.find((c) => c.amount === price * 100);
+    expect(charge).toBeDefined();
+    expect(charge!.currency).toEqual('usd');
+    // const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+    // expect(chargeOptions.source).toEqual(token);
+    // expect(chargeOptions.currency).toEqual('usd');
+    // expect(chargeOptions.amount).toEqual(1200);
   });
 });

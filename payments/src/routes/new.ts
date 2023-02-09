@@ -19,7 +19,6 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log('Called create payment');
     const { orderId, token } = req.body;
     const order = await Order.findById(orderId);
     if (!order) {
