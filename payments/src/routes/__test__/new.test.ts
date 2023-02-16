@@ -5,6 +5,7 @@ import { signin } from '../../test/authHelper';
 import { Order } from '../../models/order';
 import { stripe } from '../../stripe';
 import { OrderStatus } from '@tocstick/common';
+import { Payment } from '../../models/payment';
 
 //jest.mock('../../stripe.ts');
 
@@ -72,9 +73,7 @@ describe('New payment order tests', () => {
     const charge = stripeCharges.data.find((c) => c.amount === price * 100);
     expect(charge).toBeDefined();
     expect(charge!.currency).toEqual('usd');
-    // const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
-    // expect(chargeOptions.source).toEqual(token);
-    // expect(chargeOptions.currency).toEqual('usd');
-    // expect(chargeOptions.amount).toEqual(1200);
+    const payment = await Payment.findOne({ stripeId: charge!.id });
+    expect(payment?.orderId).toEqual(order.id);
   });
 });
