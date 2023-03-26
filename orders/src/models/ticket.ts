@@ -53,8 +53,9 @@ ticketSchema.static('findByEvent', async function findByEvent(event: { id: strin
 ticketSchema.methods.isReserved = async function () {
   const existingOrder = await Order.findOne({
     ticket: this,
-    status: { $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Cancelled] },
+    status: { $in: [OrderStatus.Created, OrderStatus.AwaitingPayment] },
   });
+  console.log('Found existing order', existingOrder);
   return existingOrder ? true : false;
 };
 

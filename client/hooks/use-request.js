@@ -4,10 +4,11 @@ import axios from 'axios';
 const useRequest = ({ url, method, body, onSuccess }) => {
   const [errorElement, setErrorElement] = useState(null);
 
-  const doRequest = async () => {
+  const doRequest = async (params = {}) => {
     setErrorElement(null);
+    console.log('Called request to url', url);
     try {
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, { ...body, ...params });
       if (onSuccess) onSuccess(response.data);
       return response.data;
     } catch (err) {

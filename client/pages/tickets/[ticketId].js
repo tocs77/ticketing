@@ -14,7 +14,7 @@ const TicketInfo = ({ ticket }) => {
     <div>
       <h2>{ticket.title}</h2>
       <h4>Price: ${ticket.price}</h4>
-      <button className='btn btn-primary' onClick={createOrderRequest}>
+      <button className='btn btn-primary' onClick={() => createOrderRequest()}>
         Purchase
       </button>
       {createOrderError}
