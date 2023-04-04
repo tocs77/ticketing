@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Router from 'next/router';
 import { buildClient } from '../api/build-client';
 
 const LandingPage = ({ currentUser, tickets }) => {
@@ -27,12 +26,6 @@ const LandingPage = ({ currentUser, tickets }) => {
         </thead>
         <tbody>{ticketsList}</tbody>
       </table>
-      <button
-        onClick={() => {
-          Router.push('/tickets/new');
-        }}>
-        Create new ticket
-      </button>
     </div>
   );
 };
